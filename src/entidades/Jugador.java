@@ -1,12 +1,12 @@
 package entidades;
 
+import StartPoint.Game;
 import utilidades.SaveLoad;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.Objects;
+
+import static utilidades.HelpMethods.CanMoveHere;
 
 import static utilidades.Constantes.PlayerConst.*;
 
@@ -19,13 +19,28 @@ public class Jugador extends Personaje {
     private float speed = 1.0f;
 
     private int playerAction = IDLE;
-    private boolean up, down, right, left, moving, attack;
+    private boolean up, down, right, left, moving, attack, jump;
+
+    private int[][] levelData;
     private BufferedImage[][] animaciones;
 
+    private float xDrawOffset = 21 * Game.SCALE;
+    private float yDrawOffset = 4 * Game.SCALE;
 
-    public Jugador(float x, float y) {
-        super(x, y);
+
+    //JUMP Y GRAVITY
+
+    private float gravity = 0.05f * Game.SCALE;
+    private float airSpeed = 0.0f;
+    private float jumpSpeed = -2.25f * Game.SCALE;
+    private float fallSpeed = 0.5f * Game.SCALE;
+    private boolean inAir = false;
+
+
+    public Jugador(float x, float y, float width, float height) {
+        super(x, y, width, height);
         importImgs();
+        initHitBox(x, y, 20 * Game.SCALE, 28 * Game.SCALE);
     }
 
     /**
@@ -35,6 +50,7 @@ public class Jugador extends Personaje {
     public void update() {
 
         updatePosition();
+        // updateHitBox();
         updateAnimation();
         updatePlayerAction();
 
@@ -49,9 +65,15 @@ public class Jugador extends Personaje {
      */
     public void render(Graphics g) {
 
-        g.drawImage(animaciones[playerAction][aniIndex], (int) this.x, (int) this.y, 128, 80, null);
+        g.drawImage(animaciones[playerAction][aniIndex], (int) (hitBox.x - xDrawOffset), (int) (hitBox.y - yDrawOffset), (int) width, (int) height, null);
+        drawHitBox(g);
 
 
+    }
+
+
+    public void loadLevelData(int[][] levelData) {
+        this.levelData = levelData;
     }
 
 
@@ -155,27 +177,45 @@ public class Jugador extends Personaje {
 
         moving = false;
 
+        if (!left && !right && !up && !down) return;
+
+
+        float xSpeed = 0, ySpeed = 0;
+
+
         if (left && !right) {
 
-            x -= speed;
-            moving = true;
+            xSpeed = -speed;
 
-        } else if (right && !left) {
-            x += speed;
-            moving = true;
+        } else if (right && !left)
 
-        }
+            xSpeed = +speed;
 
         if (up && !down) {
+            ySpeed = -speed;
 
-            y -= speed;
+        } else if (down && !up)
+
+            ySpeed = +speed;
+
+
+       /* if (CanMoveHere(x + xSpeed, y + ySpeed, levelData, (int) width, (int) height)) {
+
+            x += xSpeed;
+            y += ySpeed;
             moving = true;
 
+        }*/
 
-        } else if (down && !up) {
+        if (CanMoveHere(hitBox.x + xSpeed, hitBox.y + ySpeed, levelData, hitBox.width, hitBox.height)) {
 
-            y += speed;
-            moving = true;
+            hitBox.x += xSpeed;
+            hitBox.y += ySpeed;
+
+            if (xSpeed != 0 || ySpeed != 0) {
+                moving = true;
+            }
+
 
         }
 
@@ -231,7 +271,7 @@ public class Jugador extends Personaje {
     }
 
     /**
-     * Metodo para que cuando la ventana pierda el focus, el jugador ya no avance
+     * ! Metodo para que cuando la ventana pierda el focus, el jugador ya no avance
      */
     public void turnOffActions() {
 

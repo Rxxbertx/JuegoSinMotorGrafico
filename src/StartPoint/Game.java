@@ -1,13 +1,14 @@
 package StartPoint;
 
 import entidades.Jugador;
+import levels.LevelManager;
 
 import java.awt.*;
 
 public class Game implements Runnable {
 
     public final static int TILES_DEFAULT_SIZE = 32;
-    public final static float SCALE = 1.5f;
+    public final static float SCALE = 2f;
     public final static int TILES_IN_WIDTH = 26;
     public final static int TILES_IN_HEIGHT = 14;
     public final static int TILES_SIZE = (int) (TILES_DEFAULT_SIZE * SCALE);
@@ -15,12 +16,13 @@ public class Game implements Runnable {
     public final static int GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
     private final VentanaGame ventana;
     private final PanelGame panel;
-    private final int FPS = 120;
-    private final int UPS = 200;
+    private final int FPS = 144;
+    private final int UPS = 150;
     private Jugador jugador;
     private Thread gameThread;
+    private LevelManager levelManager;
 
-    //todo eso es para caluclar el ancho y alto de la ventana.
+    //todo eso es para calcular el ancho y alto de la ventana.
 
     public Game() {
 
@@ -42,7 +44,9 @@ public class Game implements Runnable {
      */
     private void inicializarTodo() {
 
-        jugador = new Jugador(200, 200);
+        levelManager = new LevelManager(this);
+        jugador = new Jugador(100, 350, (int) (64 * SCALE), (int) (40 * SCALE));
+        jugador.loadLevelData(levelManager.getCurrentLevel().getLvlData());
 
     }
 
@@ -60,6 +64,7 @@ public class Game implements Runnable {
     public void update() {
 
         jugador.update();
+        levelManager.update();
     }
 
     /**
@@ -70,7 +75,10 @@ public class Game implements Runnable {
      * @param g graphics
      */
     public void render(Graphics g) {
+
+
         jugador.render(g);
+        levelManager.draw(g);
     }
 
 
