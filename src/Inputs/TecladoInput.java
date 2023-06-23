@@ -1,5 +1,6 @@
 package Inputs;
 
+import GameStates.GameState;
 import StartPoint.PanelGame;
 import entidades.Jugador;
 
@@ -28,27 +29,26 @@ public class TecladoInput implements KeyListener {
     public void keyPressed(KeyEvent e) {
 
         //dependiendo de la tecla detectada, habilito el rumbo que tiene que tomar el jugador
-
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_A:
-                panelGame.getGame().getJugador().setLeft(true);
-
-                break;
-            case KeyEvent.VK_D:
-                panelGame.getGame().getJugador().setRight(true);
-
-                break;
-            case KeyEvent.VK_W:
-                panelGame.getGame().getJugador().setUp(true);
-
-                break;
-            case KeyEvent.VK_S:
-
-                panelGame.getGame().getJugador().setDown(true);
+        switch (GameState.state) {
 
 
-                break;
+            case PLAYING -> {
+                panelGame.getGame().getPlaying().keyPressed(e);
+            }
+
+            case MENU -> {
+
+                panelGame.getGame().getMenu().keyPressed(e);
+
+            }
+            case PAUSE -> {
+            }
+            case DEAD -> {
+            }
+            case WIN -> {
+            }
         }
+
     }
 
     @Override
@@ -56,27 +56,25 @@ public class TecladoInput implements KeyListener {
 
         //dependiendo de la tecla que he dejado de presionar, hago que el personaje deje de avanzar en la direccion especifica
 
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_A:
-                panelGame.getGame().getJugador().setLeft(false);
 
-                break;
-            case KeyEvent.VK_D:
-                panelGame.getGame().getJugador().setRight(false);
+        switch (GameState.state) {
 
-                break;
-            case KeyEvent.VK_W:
-                panelGame.getGame().getJugador().setUp(false);
 
-                break;
-            case KeyEvent.VK_S:
+            case PLAYING -> {
+                panelGame.getGame().getPlaying().keyReleased(e);
+            }
 
-                panelGame.getGame().getJugador().setDown(false);
+            case MENU -> {
 
-                break;
+                panelGame.getGame().getMenu().keyReleased(e);
 
+            }
+            case PAUSE -> {
+            }
+            case DEAD -> {
+            }
+            case WIN -> {
+            }
         }
-
-
     }
 }

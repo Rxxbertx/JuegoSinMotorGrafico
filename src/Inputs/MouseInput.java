@@ -1,5 +1,6 @@
 package Inputs;
 
+import GameStates.GameState;
 import StartPoint.PanelGame;
 
 import java.awt.event.MouseEvent;
@@ -21,9 +22,28 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 
         //si he realizado clic, entonces habilito la accion de atacar en el jugador
 
-        if (e.getButton() == MouseEvent.BUTTON1) {
-            panelGame.getGame().getJugador().setAttacking(true);
+        switch (GameState.state) {
+
+            case MENU:
+
+                panelGame.getGame().getMenu().mouseClicked(e);
+
+                break;
+            case PLAYING:
+
+                panelGame.getGame().getPlaying().mouseClicked(e);
+
+
+                break;
+            case PAUSE:
+                break;
+            case DEAD:
+                break;
+            case WIN:
+                break;
+
         }
+
 
     }
 

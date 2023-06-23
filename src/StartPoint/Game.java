@@ -1,9 +1,11 @@
 package StartPoint;
 
-import entidades.Jugador;
-import levels.LevelManager;
+import GameStates.GameState;
+import GameStates.Menu;
+import GameStates.Playing;
 
 import java.awt.*;
+
 
 public class Game implements Runnable {
 
@@ -14,13 +16,15 @@ public class Game implements Runnable {
     public final static int TILES_SIZE = (int) (TILES_DEFAULT_SIZE * SCALE);
     public final static int GAME_WIDTH = TILES_SIZE * TILES_IN_WIDTH;
     public final static int GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
-    private final VentanaGame ventana;
-    private final PanelGame panel;
+    private final VentanaGame VENTANA;
+    private final PanelGame PANEL;
     private final int FPS = 144;
     private final int UPS = 150;
-    private Jugador jugador;
     private Thread gameThread;
-    private LevelManager levelManager;
+
+    private Playing playing;
+    private Menu menu;
+
 
     //todo eso es para calcular el ancho y alto de la ventana.
 
@@ -30,9 +34,9 @@ public class Game implements Runnable {
 
         inicializarTodo();
 
-        panel = new PanelGame(this);//creamos el panel del juego
-        ventana = new VentanaGame(panel);//creamos la ventana del juego y le añadimos el panel
-        panel.requestFocus();// y hacemos que el panel tengo todo el focus
+        PANEL = new PanelGame(this);//creamos el panel del juego
+        VENTANA = new VentanaGame(PANEL);//creamos la ventana del juego y le añadimos el panel
+        PANEL.requestFocus();// y hacemos que el panel tengo todo el focus
 
         startLoop(); //y comenzamos a inciar el loop del juego (render y update)
 
@@ -44,9 +48,9 @@ public class Game implements Runnable {
      */
     private void inicializarTodo() {
 
-        levelManager = new LevelManager(this);
-        jugador = new Jugador(100, 350, (int) (64 * SCALE), (int) (40 * SCALE));
-        jugador.loadLevelData(levelManager.getCurrentLevel().getLvlData());
+        playing = new Playing(this);
+        menu = new Menu(this);
+
 
     }
 
@@ -63,8 +67,21 @@ public class Game implements Runnable {
      */
     public void update() {
 
-        jugador.update();
-        levelManager.update();
+        switch (GameState.state) {
+            case MENU -> {
+                menu.update();
+            }
+            case PAUSE -> {
+            }
+            case DEAD -> {
+            }
+            case WIN -> {
+            }
+            case PLAYING -> {
+                playing.update();
+
+            }
+        }
     }
 
     /**
@@ -76,9 +93,24 @@ public class Game implements Runnable {
      */
     public void render(Graphics g) {
 
+        switch (GameState.state) {
+            case MENU -> {
+                menu.render(g);
+            }
+            case PAUSE -> {
+            }
+            case DEAD -> {
+            }
+            case WIN -> {
+            }
+            case PLAYING -> {
 
-        jugador.render(g);
-        levelManager.draw(g);
+                playing.render(g);
+
+            }
+        }
+
+
     }
 
 
@@ -181,7 +213,7 @@ public class Game implements Runnable {
 
             if (deltaF >= 1) {
 
-                panel.repaint();
+                PANEL.repaint();
                 frames++;
                 deltaF--;
 
@@ -212,12 +244,22 @@ public class Game implements Runnable {
     }
 
     /**
-     * Devuelve el jugador que se ha inicializado en esta clase
+     * Devuelve el estado playing que se ha inicializado en esta clase
      *
-     * @return jugador
+     * @return playing
      */
-    public Jugador getJugador() {
-        return jugador;
+    public Playing getPlaying() {
+        return playing;
+    }
+
+
+    /**
+     * Devuelve el estado menu que se ha inicializado en esta clase
+     *
+     * @return menu
+     */
+    public Menu getMenu() {
+        return menu;
     }
 
     /**
@@ -226,7 +268,10 @@ public class Game implements Runnable {
      */
     public void windowFocusLost() {
 
-        getJugador().turnOffActions();
+
+        if (GameState.state == GameState.PLAYING) {
+            playing.windowFocusLost();
+        }
 
     }
 }

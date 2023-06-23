@@ -6,7 +6,7 @@ import utilidades.SaveLoad;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import static utilidades.HelpMethods.CanMoveHere;
+import static utilidades.HelpMethods.*;
 
 import static utilidades.Constantes.PlayerConst.*;
 
@@ -14,9 +14,9 @@ public class Jugador extends Personaje {
 
     private int aniTick;
     private int aniIndex;
-    private final int aniSpeed = 20;
+    private final int aniSpeed = 25;
 
-    private float speed = 1.0f;
+    private float speed = 2.0f;
 
     private int playerAction = IDLE;
     private boolean up, down, right, left, moving, attack, jump;
@@ -30,17 +30,18 @@ public class Jugador extends Personaje {
 
     //JUMP Y GRAVITY
 
-    private float gravity = 0.05f * Game.SCALE;
-    private float airSpeed = 0.0f;
+    private float gravity = 0.04f * Game.SCALE;
+    private float airSpeed = 0f;
     private float jumpSpeed = -2.25f * Game.SCALE;
     private float fallSpeed = 0.5f * Game.SCALE;
     private boolean inAir = false;
+    private boolean hitGround;
 
 
     public Jugador(float x, float y, float width, float height) {
         super(x, y, width, height);
         importImgs();
-        initHitBox(x, y, 20 * Game.SCALE, 28 * Game.SCALE);
+        initHitBox(x, y, 20 * Game.SCALE, 27 * Game.SCALE);
     }
 
     /**
@@ -74,6 +75,9 @@ public class Jugador extends Personaje {
 
     public void loadLevelData(int[][] levelData) {
         this.levelData = levelData;
+        if (!IsEntityOnTheGround(hitBox, levelData)) {
+            inAir = true;
+        }
     }
 
 
@@ -150,6 +154,17 @@ public class Jugador extends Personaje {
             this.playerAction = ATTACK_1;
         }
 
+        if (inAir) {
+
+            if (airSpeed < 0) this.playerAction = JUMP;
+            else this.playerAction = FALLING;
+
+            if (isAttacking()) this.playerAction = ATTACK_JUMP_1;
+
+
+        }
+
+
         if (startAni != playerAction) {
             resetAni();
         }
@@ -177,37 +192,60 @@ public class Jugador extends Personaje {
 
         moving = false;
 
-        if (!left && !right && !up && !down) return;
+
+        if (jump) {
+            jump();
+        }
 
 
-        float xSpeed = 0, ySpeed = 0;
+        if (!left && !right && !inAir) return;
 
 
-        if (left && !right) {
-
-            xSpeed = -speed;
-
-        } else if (right && !left)
-
-            xSpeed = +speed;
-
-        if (up && !down) {
-            ySpeed = -speed;
-
-        } else if (down && !up)
-
-            ySpeed = +speed;
+        float xSpeed = 0;
 
 
-       /* if (CanMoveHere(x + xSpeed, y + ySpeed, levelData, (int) width, (int) height)) {
+        if (left) xSpeed -= speed;
+        if (right) xSpeed += speed;
 
-            x += xSpeed;
-            y += ySpeed;
-            moving = true;
+        if (!inAir) {
+            if (!IsEntityOnTheGround(hitBox, levelData)) {
+                inAir = true;
 
-        }*/
+            }
+        }
 
-        if (CanMoveHere(hitBox.x + xSpeed, hitBox.y + ySpeed, levelData, hitBox.width, hitBox.height)) {
+        if (inAir) {
+
+            if (CanMoveHere(hitBox.x, hitBox.y + airSpeed, levelData, hitBox.width, hitBox.height)) {
+                hitBox.y += airSpeed;
+                airSpeed += gravity;
+                updateXPosition(xSpeed);
+
+            } else {
+
+                hitBox.y = getEntityPosUnderOrAbove(hitBox, airSpeed);
+                if (airSpeed > 0) {
+
+                    resetInAir();
+                    setAttacking(false);
+
+                } else {
+                    airSpeed = fallSpeed;
+
+                }
+                updateXPosition(xSpeed);
+            }
+
+        } else {
+            updateXPosition(xSpeed);
+
+        }
+
+        moving = true;
+
+
+
+        /*if (CanMoveHere(hitBox.x + xSpeed, hitBox.y + ySpeed, levelData, hitBox.width, hitBox.height)) {
 
             hitBox.x += xSpeed;
             hitBox.y += ySpeed;
@@ -217,13 +255,48 @@ public class Jugador extends Personaje {
             }
 
 
+        }*/
+
+
+    }
+
+    private void resetInAir() {
+        inAir = false;
+        airSpeed = 0;
+
+    }
+
+    private void jump() {
+
+        if (!inAir) {
+            inAir = true;
+            airSpeed = jumpSpeed;
         }
 
+    }
+
+    private void updateXPosition(float xSpeed) {
+
+        if (CanMoveHere(hitBox.x + xSpeed, hitBox.y, levelData, hitBox.width, hitBox.height)) {
+
+            hitBox.x += xSpeed;
+        } else {
+            hitBox.x = getEntityPosNextToWall(hitBox, xSpeed);
+        }
 
     }
 
 
     //todos esos metodos son para la direccion del personaje y moviemientos como ataque o asi
+
+
+    public void setJump(boolean jump) {
+        this.jump = jump;
+    }
+
+    public boolean isJump() {
+        return jump;
+    }
 
     private boolean isMoving() {
         return moving;

@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 import static utilidades.Constantes.PlayerConst.*;
-import static utilidades.Constantes.PlayerConst.ATTACK_1;
+
 
 public class SaveLoad {
 
@@ -72,6 +72,41 @@ public class SaveLoad {
         for (int i = 0; i < 3; i++) {
             try {
                 animaciones[ATTACK_1][i] = ImageIO.read(Objects.requireNonNull(SaveLoad.class.getResource(imageCaptainPath + "15-Attack 1/Attack 1 0" + (i + 1) + ".png")));
+            } catch (IOException e) {
+                // Manejar la excepción
+                e.printStackTrace();
+            }
+        }
+
+
+        //Captain attack
+
+        for (int i = 0; i < 3; i++) {
+            try {
+                animaciones[ATTACK_JUMP_1][i] = ImageIO.read(Objects.requireNonNull(SaveLoad.class.getResource(imageCaptainPath + "18-Air Attack 1/Air Attack 1 0" + (i + 1) + ".png")));
+            } catch (IOException e) {
+                // Manejar la excepción
+                e.printStackTrace();
+            }
+        }
+
+
+
+//Captain fall
+        for (int i = 0; i < 1; i++) {
+            try {
+                animaciones[FALLING][i] = ImageIO.read(Objects.requireNonNull(SaveLoad.class.getResource(imageCaptainPath + "12-Fall Sword/Fall Sword 0" + (i + 1) + ".png")));
+            } catch (IOException e) {
+                // Manejar la excepción
+                e.printStackTrace();
+            }
+        }
+
+
+        //Captain GROUND
+        for (int i = 0; i < 2; i++) {
+            try {
+                animaciones[GROUND][i] = ImageIO.read(Objects.requireNonNull(SaveLoad.class.getResource(imageCaptainPath + "13-Ground Sword/Ground Sword 0" + (i + 1) + ".png")));
             } catch (IOException e) {
                 // Manejar la excepción
                 e.printStackTrace();
