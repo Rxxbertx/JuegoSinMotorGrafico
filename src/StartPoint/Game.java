@@ -10,7 +10,7 @@ import java.awt.*;
 public class Game implements Runnable {
 
     public final static int TILES_DEFAULT_SIZE = 32;
-    public final static float SCALE = 2f;
+    public final static float SCALE = 1.5F;
     public final static int TILES_IN_WIDTH = 26;
     public final static int TILES_IN_HEIGHT = 14;
     public final static int TILES_SIZE = (int) (TILES_DEFAULT_SIZE * SCALE);
@@ -63,7 +63,8 @@ public class Game implements Runnable {
     }
 
     /**
-     * En este metodo lo que hacemos es actualizar la logica del programa, en este caso actualizamos la logica del jugador
+     * En este metodo lo que hacemos es actualizar la logica del programa, en este caso actualizamos la logica del
+     * jugador
      */
     public void update() {
 
@@ -81,13 +82,19 @@ public class Game implements Runnable {
                 playing.update();
 
             }
+            case QUIT -> {
+                System.exit(0);
+            }
+            case OPTIONS -> {
+
+            }
         }
     }
 
     /**
-     * En este metodo actualizamos el renderizado, es decir aquello que vemos,
-     * este metodo se usa en el panel. para pasarle al GAME
-     * los mismos graphics que usa el jpanel, y como el repaint del panel llama al render del juego, entonces se ejecuta constantemente
+     * En este metodo actualizamos el renderizado, es decir aquello que vemos, este metodo se usa en el panel. para
+     * pasarle al GAME los mismos graphics que usa el jpanel, y como el repaint del panel llama al render del juego,
+     * entonces se ejecuta constantemente
      *
      * @param g graphics
      */
@@ -263,8 +270,8 @@ public class Game implements Runnable {
     }
 
     /**
-     * Esto es para cuando la ventana pierda el focus, entonces llama al metodo respectivo en jugador, el cual
-     * hace que no se ejecute su movimiento y se quede parado
+     * Esto es para cuando la ventana pierda el focus, entonces llama al metodo respectivo en jugador, el cual hace que
+     * no se ejecute su movimiento y se quede parado
      */
     public void windowFocusLost() {
 

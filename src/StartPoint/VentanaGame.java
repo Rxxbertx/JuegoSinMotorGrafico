@@ -12,7 +12,7 @@ public class VentanaGame extends JFrame {
         getContentPane().add(panel); // Agrega el panel de juego al contenido de la ventana
         pack(); // Ajusta el tamaño de la ventana según el contenido
         setLocationRelativeTo(null); // Centra la ventana en la pantalla
-        setResizable(false); // Evita que la ventana sea redimensionable
+        //setResizable(false); // Evita que la ventana sea redimensionable
         setVisible(true); // Hace visible la ventana
 
         // Agrega un WindowFocusListener para detectar cambios de enfoque en la ventana

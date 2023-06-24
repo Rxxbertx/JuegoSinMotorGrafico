@@ -26,4 +26,6 @@ public interface StateMethods {
 
     void mouseDragged(MouseEvent e);
 
+    void mousePressed(MouseEvent e);
+
 }

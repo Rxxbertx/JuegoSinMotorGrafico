@@ -50,10 +50,57 @@ public class MouseInput implements MouseListener, MouseMotionListener {
     @Override
     public void mousePressed(MouseEvent e) {
 
+
+        switch (GameState.state) {
+
+            case MENU:
+
+                panelGame.getGame().getMenu().mousePressed(e);
+
+                break;
+            case PLAYING:
+
+                panelGame.getGame().getPlaying().mousePressed(e);
+
+
+                break;
+            case PAUSE:
+                break;
+            case DEAD:
+                break;
+            case WIN:
+                break;
+
+        }
+
+
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
+
+        switch (GameState.state) {
+
+            case MENU:
+
+                panelGame.getGame().getMenu().mouseReleased(e);
+
+                break;
+            case PLAYING:
+
+                panelGame.getGame().getPlaying().mouseReleased(e);
+
+
+                break;
+            case PAUSE:
+                break;
+            case DEAD:
+                break;
+            case WIN:
+                break;
+
+        }
+
 
     }
 
@@ -70,10 +117,54 @@ public class MouseInput implements MouseListener, MouseMotionListener {
     @Override
     public void mouseDragged(MouseEvent e) {
 
+        switch (GameState.state) {
+
+            case MENU:
+
+                panelGame.getGame().getMenu().mouseDragged(e);
+
+                break;
+            case PLAYING:
+
+                panelGame.getGame().getPlaying().mouseDragged(e);
+
+
+                break;
+            case PAUSE:
+                break;
+            case DEAD:
+                break;
+            case WIN:
+                break;
+
+        }
+
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
+
+        switch (GameState.state) {
+
+            case MENU:
+
+                panelGame.getGame().getMenu().mouseMoved(e);
+
+                break;
+            case PLAYING:
+
+                panelGame.getGame().getPlaying().mouseMoved(e);
+
+
+                break;
+            case PAUSE:
+                break;
+            case DEAD:
+                break;
+            case WIN:
+                break;
+
+        }
 
 
     }

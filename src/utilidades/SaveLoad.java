@@ -1,7 +1,6 @@
 package utilidades;
 
 import StartPoint.Game;
-import com.sun.source.tree.BreakTree;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -16,11 +15,43 @@ public class SaveLoad {
 
     public static final String LEVEL_ATLAS = "/Treasure Hunters/Palm Tree Island/Sprites/Terrain/Terrain (32x32).png";
     public static final String LEVEL_ONE_DATA = "/Levels/level1.png";
+    public static final String MENU_BUTTONS = "/UI/MENU/button_atlas.png";
+    public static final String MENU_BACKGROUND = "/UI/MENU/menu_background.png";
+    public static final String PAUSE_MENU = "/UI/PAUSE/pause_menu.png";
+    public static final String SOUND_BUTTONS = "/UI/PAUSE/sound_button.png";
+    public static final String URM_BUTTONS = "/UI/PAUSE/urm_buttons.png";
+    public static final String VOLUME_BUTTONS = "/UI/PAUSE/volume_buttons.png";
+    public static final String MAR = "/Treasure Hunters/Palm Tree Island/Sprites/Background/Additional Water.png";
+    public static final String CIELO = "/Treasure Hunters/Palm Tree Island/Sprites/Background/Additional Sky.png";
+
+
+    public static BufferedImage[] getNubesSprites() {
+
+        BufferedImage[] nubes = new BufferedImage[4];
+
+        for (int i = 0; i < 3; i++) {
+            try {
+                nubes[i] = ImageIO.read(Objects.requireNonNull(SaveLoad.class.getResource("/Treasure Hunters/Palm Tree Island/Sprites/Background/Small Cloud " + (i + 1) + ".png")));
+            } catch (IOException e) {
+                // Manejar la excepción
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            nubes[3] = ImageIO.read(Objects.requireNonNull(SaveLoad.class.getResource("/Treasure Hunters/Palm Tree Island/Sprites/Background/Big Clouds.png")));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return nubes;
+
+    }
+
 
     /**
-     * Este metodo lo que hace es devolver todos los sprites relacionados con el jugador
-     * es decir por cada pack de animaciones que puede tener, las devuelve en un bi array
-     * para que luego se puedan recorrer facilmente
+     * Este metodo lo que hace es devolver todos los sprites relacionados con el jugador es decir por cada pack de
+     * animaciones que puede tener, las devuelve en un bi array para que luego se puedan recorrer facilmente
      *
      * @return
      */
@@ -89,7 +120,6 @@ public class SaveLoad {
                 e.printStackTrace();
             }
         }
-
 
 
 //Captain fall
@@ -168,5 +198,40 @@ public class SaveLoad {
         return levelData;
     }
 
+
+    public static BufferedImage[] getReflejoMarGrande() {
+
+        BufferedImage[] reflejoMar = new BufferedImage[4];
+
+
+        for (int i = 0; i < 4; i++) {
+            try {
+                reflejoMar[i] = ImageIO.read(Objects.requireNonNull(SaveLoad.class.getResource("/Treasure Hunters/Palm Tree Island/Sprites/Background/Water Reflect Big 0" + (i + 1) + ".png")));
+            } catch (IOException e) {
+                // Manejar la excepción
+                e.printStackTrace();
+            }
+        }
+
+        return reflejoMar;
+    }
+
+
+    public static BufferedImage[] getPalmeraRegular() {
+
+        BufferedImage[] temp = new BufferedImage[4];
+
+
+        for (int i = 0; i < 4; i++) {
+            try {
+                temp[i] = ImageIO.read(Objects.requireNonNull(SaveLoad.class.getResource("/Treasure Hunters/Palm Tree Island/Sprites/Back Palm Trees/Back Palm Tree Regular 0"+ (i + 1) + ".png")));
+            } catch (IOException e) {
+                // Manejar la excepción
+                e.printStackTrace();
+            }
+        }
+
+        return temp;
+    }
 
 }

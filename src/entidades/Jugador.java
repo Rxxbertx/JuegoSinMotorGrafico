@@ -16,7 +16,7 @@ public class Jugador extends Personaje {
     private int aniIndex;
     private final int aniSpeed = 25;
 
-    private float speed = 2.0f;
+    private float speed = 1.0f * Game.SCALE;
 
     private int playerAction = IDLE;
     private boolean up, down, right, left, moving, attack, jump;
@@ -36,6 +36,7 @@ public class Jugador extends Personaje {
     private float fallSpeed = 0.5f * Game.SCALE;
     private boolean inAir = false;
     private boolean hitGround;
+    private boolean invertWidth;
 
 
     public Jugador(float x, float y, float width, float height) {
@@ -45,8 +46,8 @@ public class Jugador extends Personaje {
     }
 
     /**
-     * Esto es para actaulziar la logica del jugador, que tendra en cuenta su posicion
-     * luego la animacion, y por ultimo la accion del jugador, si cambiamos de accion es cuando luego se actualizara la animacion, no antes
+     * Esto es para actaulziar la logica del jugador, que tendra en cuenta su posicion luego la animacion, y por ultimo
+     * la accion del jugador, si cambiamos de accion es cuando luego se actualizara la animacion, no antes
      */
     public void update() {
 
@@ -59,14 +60,17 @@ public class Jugador extends Personaje {
     }
 
     /**
-     * Esto es para renderizar al jugador, es decir mostrara la animacion respectiva
-     * cada cuanto se solicite el render.
+     * Esto es para renderizar al jugador, es decir mostrara la animacion respectiva cada cuanto se solicite el render.
      *
      * @param g
      */
     public void render(Graphics g) {
 
-        g.drawImage(animaciones[playerAction][aniIndex], (int) (hitBox.x - xDrawOffset), (int) (hitBox.y - yDrawOffset), (int) width, (int) height, null);
+        if (invertWidth)
+            g.drawImage(animaciones[playerAction][aniIndex], (int) (hitBox.x - xDrawOffset + width), (int) (hitBox.y - yDrawOffset), (int) -width, (int) height, null);
+        else
+            g.drawImage(animaciones[playerAction][aniIndex], (int) (hitBox.x - xDrawOffset), (int) (hitBox.y - yDrawOffset), (int) width, (int) height, null);
+
         drawHitBox(g);
 
 
@@ -93,21 +97,32 @@ public class Jugador extends Personaje {
     }
 
     /**
-     * El método updateAnimation() es responsable de actualizar la animación del personaje en el juego. A continuación, se detalla cómo funciona:
+     * El método updateAnimation() es responsable de actualizar la animación del personaje en el juego. A continuación,
+     * se detalla cómo funciona:
      * <p>
-     * aniTick es una variable que lleva la cuenta del tiempo transcurrido en la animación actual. Se incrementa en 1 en cada llamada al método.
+     * aniTick es una variable que lleva la cuenta del tiempo transcurrido en la animación actual. Se incrementa en 1 en
+     * cada llamada al método.
      * <p>
-     * aniSpeed es una variable que determina la velocidad de la animación. Indica cada cuántas actualizaciones de la animación se cambia al siguiente frame.
+     * aniSpeed es una variable que determina la velocidad de la animación. Indica cada cuántas actualizaciones de la
+     * animación se cambia al siguiente frame.
      * <p>
-     * Si aniTick alcanza o supera el valor de aniSpeed, significa que ha pasado suficiente tiempo para avanzar al siguiente frame de la animación.
+     * Si aniTick alcanza o supera el valor de aniSpeed, significa que ha pasado suficiente tiempo para avanzar al
+     * siguiente frame de la animación.
      * <p>
-     * Cuando se cumple esta condición, aniTick se restablece a 0 y aniIndex, que representa el índice del frame actual, se incrementa en 1.
+     * Cuando se cumple esta condición, aniTick se restablece a 0 y aniIndex, que representa el índice del frame actual,
+     * se incrementa en 1.
      * <p>
-     * Luego, se verifica si aniIndex ha alcanzado o superado la cantidad total de sprites o frames para la acción del jugador (playerAction). Si es así, significa que se ha reproducido toda la animación y se debe volver al primer frame.
+     * Luego, se verifica si aniIndex ha alcanzado o superado la cantidad total de sprites o frames para la acción del
+     * jugador (playerAction). Si es así, significa que se ha reproducido toda la animación y se debe volver al primer
+     * frame.
      * <p>
-     * Si se ha completado la animación, se establece la variable attacking en falso. Esto indica que el personaje ya no está atacando, lo que puede tener implicaciones en la lógica del juego.
+     * Si se ha completado la animación, se establece la variable attacking en falso. Esto indica que el personaje ya no
+     * está atacando, lo que puede tener implicaciones en la lógica del juego.
      * <p>
-     * En resumen, el método updateAnimation() controla el avance de la animación del personaje en el juego. Cada vez que se llama al método, se incrementa un contador de tiempo y se comprueba si ha pasado suficiente tiempo para avanzar al siguiente frame de la animación. Si se completa la animación, se realiza alguna acción adicional, como establecer la variable attacking en falso.
+     * En resumen, el método updateAnimation() controla el avance de la animación del personaje en el juego. Cada vez
+     * que se llama al método, se incrementa un contador de tiempo y se comprueba si ha pasado suficiente tiempo para
+     * avanzar al siguiente frame de la animación. Si se completa la animación, se realiza alguna acción adicional, como
+     * establecer la variable attacking en falso.
      */
     private void updateAnimation() {
 
@@ -136,9 +151,9 @@ public class Jugador extends Personaje {
     }
 
     /**
-     * Comprueba la accion del usuario a realizar, si la animacion que tiene , se mantiene
-     * entonce no hara falta restablecer las animaciones, en caso contrario si
-     * Si el personaje se puede mover correra, si no se quedara quieto, y si ataca atacara
+     * Comprueba la accion del usuario a realizar, si la animacion que tiene , se mantiene entonce no hara falta
+     * restablecer las animaciones, en caso contrario si Si el personaje se puede mover correra, si no se quedara
+     * quieto, y si ataca atacara
      */
     public void updatePlayerAction() {
 
@@ -184,9 +199,8 @@ public class Jugador extends Personaje {
 
 
     /**
-     * Esto es para saber actualizar la posicion del personaje, dependiendo
-     * de si se tiene movimiento en derecha, izquierda, arriba o abajo, y evitar que el
-     * perro pulse dos teclas del mismo eje a la vez
+     * Esto es para saber actualizar la posicion del personaje, dependiendo de si se tiene movimiento en derecha,
+     * izquierda, arriba o abajo, y evitar que el perro pulse dos teclas del mismo eje a la vez
      */
     public void updatePosition() {
 
@@ -204,8 +218,14 @@ public class Jugador extends Personaje {
         float xSpeed = 0;
 
 
-        if (left) xSpeed -= speed;
-        if (right) xSpeed += speed;
+        if (left) {
+            xSpeed -= speed;
+            invertWidth = true;
+        }
+        if (right) {
+            xSpeed += speed;
+            invertWidth = false;
+        }
 
         if (!inAir) {
             if (!IsEntityOnTheGround(hitBox, levelData)) {
