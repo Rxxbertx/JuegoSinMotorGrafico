@@ -149,6 +149,7 @@ public class Menu extends State implements StateMethods {
         g.drawImage(personaje[accion][aniPersonaje], (int) posXpersonaje, Game.TILES_SIZE * (Game.TILES_IN_HEIGHT / 2 + 2) - Game.TILES_SIZE / 2, Game.TILES_SIZE * 3, Game.TILES_SIZE * 2, null);
 
 
+
     }
 
     private void cargarFondo() {
@@ -307,6 +308,7 @@ public class Menu extends State implements StateMethods {
 
             case KeyEvent.VK_ENTER:
                 GameState.state = GameState.PLAYING;
+
                 break;
 
 

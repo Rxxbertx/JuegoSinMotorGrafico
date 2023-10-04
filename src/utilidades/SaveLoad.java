@@ -14,9 +14,12 @@ import static utilidades.Constantes.PlayerConst.*;
 public class SaveLoad {
 
     public static final String LEVEL_ATLAS = "/Treasure Hunters/Palm Tree Island/Sprites/Terrain/Terrain (32x32).png";
-    public static final String LEVEL_ONE_DATA = "/Levels/level1.png";
+   // public static final String LEVEL_ONE_DATA = "/Levels/level1.png";
+    public static final String LEVEL_ONE_LONG_DATA = "/Levels/level1long.png";
     public static final String MENU_BUTTONS = "/UI/MENU/button_atlas.png";
     public static final String MENU_BACKGROUND = "/UI/MENU/menu_background.png";
+
+    public static final String ISLAND_BACKGROUND = "/Treasure Hunters/Palm Tree Island/Sprites/Background/BG Image.png";
     public static final String PAUSE_MENU = "/UI/PAUSE/pause_menu.png";
     public static final String SOUND_BUTTONS = "/UI/PAUSE/sound_button.png";
     public static final String URM_BUTTONS = "/UI/PAUSE/urm_buttons.png";
@@ -171,11 +174,12 @@ public class SaveLoad {
 
 
     public static int[][] getLevelData() {
-        // Crea una matriz bidimensional para almacenar los datos del nivel
-        int[][] levelData = new int[Game.TILES_IN_HEIGHT][Game.TILES_IN_WIDTH];
 
         // Obtén la imagen del atlas de sprites correspondiente al nivel
-        BufferedImage levelImg = getSpriteAtlas(LEVEL_ONE_DATA);
+        BufferedImage levelImg = getSpriteAtlas(LEVEL_ONE_LONG_DATA);
+
+// Crea una matriz bidimensional para almacenar los datos del nivel
+        int[][] levelData = new int[levelImg.getHeight()][levelImg.getWidth()];
 
         // Itera sobre los píxeles de la imagen del nivel
         for (int i = 0; i < levelImg.getHeight(); i++) {
@@ -224,7 +228,7 @@ public class SaveLoad {
 
         for (int i = 0; i < 4; i++) {
             try {
-                temp[i] = ImageIO.read(Objects.requireNonNull(SaveLoad.class.getResource("/Treasure Hunters/Palm Tree Island/Sprites/Back Palm Trees/Back Palm Tree Regular 0"+ (i + 1) + ".png")));
+                temp[i] = ImageIO.read(Objects.requireNonNull(SaveLoad.class.getResource("/Treasure Hunters/Palm Tree Island/Sprites/Back Palm Trees/Back Palm Tree Regular 0" + (i + 1) + ".png")));
             } catch (IOException e) {
                 // Manejar la excepción
                 e.printStackTrace();

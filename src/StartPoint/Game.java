@@ -10,16 +10,17 @@ import java.awt.*;
 public class Game implements Runnable {
 
     public final static int TILES_DEFAULT_SIZE = 32;
-    public final static float SCALE = 1.5F;
+    public final static float SCALE = 2f;
     public final static int TILES_IN_WIDTH = 26;
     public final static int TILES_IN_HEIGHT = 14;
     public final static int TILES_SIZE = (int) (TILES_DEFAULT_SIZE * SCALE);
     public final static int GAME_WIDTH = TILES_SIZE * TILES_IN_WIDTH;
     public final static int GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
+
     private final VentanaGame VENTANA;
     private final PanelGame PANEL;
     private final int FPS = 144;
-    private final int UPS = 150;
+    private final int UPS = 200;
     private Thread gameThread;
 
     private Playing playing;
@@ -48,8 +49,9 @@ public class Game implements Runnable {
      */
     private void inicializarTodo() {
 
-        playing = new Playing(this);
         menu = new Menu(this);
+        playing = new Playing(this);
+
 
 
     }

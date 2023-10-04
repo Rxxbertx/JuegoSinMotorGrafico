@@ -4,19 +4,36 @@ import StartPoint.Game;
 import entidades.Jugador;
 import levels.LevelManager;
 import ui.PauseOverlay;
+import utilidades.SaveLoad;
+
+import static utilidades.Constantes.*;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.util.Random;
 
 public class Playing extends State implements StateMethods {
 
     private LevelManager levelManager;
     private Jugador jugador;
-
-
     private boolean paused = false;
     private PauseOverlay pauseOverlay;
+
+    private BufferedImage background;
+
+    private BufferedImage[] nubes;
+
+    private int[] nubesPequesY;
+    private Random random = new Random();
+    //
+    private int xLvlOffset;
+    private int leftBorder = (int) (0.2 * Game.GAME_WIDTH);
+    private int rightBorder = (int) (0.8 * Game.GAME_WIDTH);
+    private int lvlTilesWide = SaveLoad.getLevelData()[0].length;
+    private int maxTilesOffset = lvlTilesWide - Game.TILES_IN_WIDTH;
+    private int maxLvlOffsetX = maxTilesOffset * Game.TILES_SIZE;
 
 
     public Playing(Game game) {
@@ -28,23 +45,42 @@ public class Playing extends State implements StateMethods {
     public void update() {
 
         if (!paused) {
+
             jugador.update();
+            checkCloseToBorder();
             levelManager.update();
+
+
         } else {
             pauseOverlay.update();
         }
 
     }
 
+
+    private void checkCloseToBorder() {
+        int playerX = (int) jugador.getHitBox().x;
+        int diff = playerX - xLvlOffset;
+
+        if (diff > rightBorder) xLvlOffset += diff - rightBorder;
+        else if (diff < leftBorder) xLvlOffset += diff - leftBorder;
+
+        if (xLvlOffset > maxLvlOffsetX) xLvlOffset = maxLvlOffsetX;
+        else if (xLvlOffset < 0) xLvlOffset = 0;
+
+    }
+
     @Override
     public void render(Graphics g) {
 
-
-        jugador.render(g);
-        levelManager.draw(g);
+        g.drawImage(background, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
+        renderClouds(g);
+        levelManager.draw(g, xLvlOffset);
+        jugador.render(g, xLvlOffset);
 
         if (paused) {
-
+            g.setColor(new Color(0, 0, 0, 150));
+            g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
             pauseOverlay.render(g);
         }
 
@@ -54,12 +90,45 @@ public class Playing extends State implements StateMethods {
     @Override
     public void init() {
 
-        pauseOverlay = new PauseOverlay(this);
+
+        nubes = SaveLoad.getNubesSprites();
+        background = SaveLoad.getSpriteAtlas(SaveLoad.ISLAND_BACKGROUND);
         levelManager = new LevelManager(game);
-        jugador = new Jugador(100 * Game.SCALE, Game.GAME_HEIGHT / 2, 64 * Game.SCALE, 40 * Game.SCALE);
+        jugador = new Jugador(100 * Game.SCALE, Game.GAME_HEIGHT / 2, (int) (64 * Game.SCALE), (int) (40 * Game.SCALE));
         jugador.loadLevelData(levelManager.getCurrentLevel().getLvlData());
+        pauseOverlay = new PauseOverlay(this);
+
+        nubesPequesY = new int[8];
+        for (int i = 0; i < nubesPequesY.length; i++) {
+
+            nubesPequesY[i] = (int) (90 * Game.SCALE + random.nextInt((int) (100 * Game.SCALE)));
+
+        }
+
+
 
     }
+
+
+    public void renderClouds(Graphics g) {
+
+
+        for (int i = 0; i < 3; i++) {
+
+            g.drawImage(nubes[3], i * Environment.BIG_CLOUD_WIDTH - (int) (xLvlOffset * 0.3), (int) (204 * Game.SCALE), Environment.BIG_CLOUD_WIDTH, Environment.BIG_CLOUD_HEIGHT, null);
+
+        }
+
+        for (int i = 0; i < nubesPequesY.length; i++) {
+
+            g.drawImage(nubes[1], Environment.SMALL_CLOUD_WIDTH * 4 * i - (int) (xLvlOffset * 0.7), nubesPequesY[i], Environment.SMALL_CLOUD_WIDTH, Environment.SMALL_CLOUD_HEIGHT, null);
+
+
+        }
+
+
+    }
+
 
     @Override
     public void keyPressed(KeyEvent e) {

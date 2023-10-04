@@ -12,9 +12,7 @@ import static utilidades.Constantes.PlayerConst.*;
 
 public class Jugador extends Personaje {
 
-    private int aniTick;
-    private int aniIndex;
-    private final int aniSpeed = 25;
+    private int aniTick, aniIndex, aniSpeed = 25;
 
     private float speed = 1.0f * Game.SCALE;
 
@@ -35,14 +33,14 @@ public class Jugador extends Personaje {
     private float jumpSpeed = -2.25f * Game.SCALE;
     private float fallSpeed = 0.5f * Game.SCALE;
     private boolean inAir = false;
-    private boolean hitGround;
+
     private boolean invertWidth;
 
 
-    public Jugador(float x, float y, float width, float height) {
+    public Jugador(float x, float y, int width, int height) {
         super(x, y, width, height);
         importImgs();
-        initHitBox(x, y, 20 * Game.SCALE, 27 * Game.SCALE);
+        initHitBox(x, y, (int) (20 * Game.SCALE), (int) (27 * Game.SCALE));
     }
 
     /**
@@ -64,12 +62,14 @@ public class Jugador extends Personaje {
      *
      * @param g
      */
-    public void render(Graphics g) {
+    public void render(Graphics g, int lvlOffest) {
 
         if (invertWidth)
-            g.drawImage(animaciones[playerAction][aniIndex], (int) (hitBox.x - xDrawOffset + width), (int) (hitBox.y - yDrawOffset), (int) -width, (int) height, null);
+            g.drawImage(animaciones[playerAction][aniIndex], (int) (hitBox.x - xDrawOffset + width) - lvlOffest, (int) (hitBox.y - yDrawOffset), (int) -width, (int) height, null);
         else
-            g.drawImage(animaciones[playerAction][aniIndex], (int) (hitBox.x - xDrawOffset), (int) (hitBox.y - yDrawOffset), (int) width, (int) height, null);
+            g.drawImage(animaciones[playerAction][aniIndex], (int) (hitBox.x - xDrawOffset) - lvlOffest, (int) (hitBox.y - yDrawOffset), width, height, null);
+
+        g.drawString("x: " + ((hitBox.x - xDrawOffset + width) - lvlOffest), 100, 100);
 
         drawHitBox(g);
 
@@ -212,7 +212,7 @@ public class Jugador extends Personaje {
         }
 
 
-        if (!left && !right && !inAir) return;
+        if (!left && !right && !inAir || right && left && !inAir) return;
 
 
         float xSpeed = 0;

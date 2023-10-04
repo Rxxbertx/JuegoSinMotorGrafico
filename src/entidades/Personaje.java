@@ -9,7 +9,7 @@ import java.awt.geom.Rectangle2D;
 public abstract class Personaje {
 
     protected float x, y;
-    protected float width, height;
+    protected int width, height;
     protected Rectangle2D.Float hitBox;
 
     /**
@@ -18,7 +18,7 @@ public abstract class Personaje {
      * @param x coord x
      * @param y coord y
      */
-    public Personaje(float x, float y, float width, float height) {
+    public Personaje(float x, float y, int width, int height) {
 
         this.x = x;
         this.y = y;
@@ -28,8 +28,8 @@ public abstract class Personaje {
     }
 
 
-    protected void initHitBox(float x, float y, float width, float height) {
-        this.hitBox = new Rectangle2D.Float(x, y, (int)width, (int)height);
+    protected void initHitBox(float x, float y, int width, int height) {
+        this.hitBox = new Rectangle2D.Float(x, y, width, height);
     }
 
     /**
